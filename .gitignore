@@ -1,0 +1,47 @@
+# Composerの依存関係ディレクトリ
+/vendor/
+
+# キャッシュディレクトリ
+/.cache/
+/.cache/
+
+# PHPUnitのキャッシュファイル
+.phpunit.result.cache
+
+# OS固有のファイル
+.DS_Store
+Thumbs.db
+
+# IDEの設定ファイル
+.idea/
+*.iml
+
+# エディタの一時ファイル
+*.swp
+*.swo
+*~
+
+# ログファイル
+*.log
+
+# 環境変数や設定ファイル
+.env
+.env.local
+.env.*.local
+
+# テスト結果
+/build/
+coverage/
+coverage.xml
+
+# オートロードファイル
+composer.lock
+
+# ララベルプロジェクトの場合
+/storage/*
+!/storage/app
+!/storage/framework
+!/storage/logs
+
+/public/storage
+/.env
