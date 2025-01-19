@@ -29,6 +29,7 @@
     }
   },
   "postCreateCommand": "composer install",
+  "postStartCommand": "bash -c \"echo 'alias phpunit=\"./vendor/bin/phpunit\"' >> ~/.bashrc && source ~/.bashrc\"",
   "forwardPorts": [8080],
   "remoteUser": "root"
 }

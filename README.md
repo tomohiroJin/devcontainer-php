@@ -44,12 +44,16 @@
    `tests/SampleTest.php` に PHPUnit を使用したテストコードが含まれています。以下のコマンドでテストを実行できます。
 
    ```bash
-   ./vendor/bin/phpunit
+   phpunit
+   ```
+
+   ```bash
+   composer phpunit
    ```
 
 ## ディレクトリ構成
 
-```
+```php
 devcontainer-php/
 ├── .devcontainer/
 │   ├── devcontainer.json
@@ -77,4 +81,4 @@ devcontainer-php/
 
 ---
 
-この設定により、迅速に PHP の開発とテストを開始できます。必要に応じて設定を調整し、最適な開発環境を構築してください。 
+この設定により、迅速に PHP の開発とテストを開始できます。必要に応じて設定を調整し、最適な開発環境を構築してください。
