@@ -1,6 +1,6 @@
 <?php
 
-namespace Basic;
+namespace App\reference\basic;
 
 /**
  * クラス: VariablesConstantsDataTypesArrays
