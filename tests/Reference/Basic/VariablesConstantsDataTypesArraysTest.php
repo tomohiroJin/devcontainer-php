@@ -1,7 +1,7 @@
 <?php
 
 use PHPUnit\Framework\TestCase;
-use App\reference\basic\VariablesConstantsDataTypesArrays;
+use App\Reference\Basic\VariablesConstantsDataTypesArrays;
 
 
 /**

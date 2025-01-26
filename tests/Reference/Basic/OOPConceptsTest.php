@@ -3,9 +3,9 @@
 declare(strict_types=1);
 
 use PHPUnit\Framework\TestCase;
-use App\reference\basic\OOPConcepts;
-use App\reference\basic\DigitalProduct;
-use App\reference\basic\PhysicalProduct;
+use App\Reference\Basic\OOPConcepts;
+use App\Reference\Basic\DigitalProduct;
+use App\Reference\Basic\PhysicalProduct;
 
 /**
  * クラス: OOPConceptsTest
