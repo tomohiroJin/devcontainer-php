@@ -2,8 +2,6 @@
 
 namespace App\Reference\Patterns\Strategy;
 
-use App\Reference\Patterns\Strategy\PaymentStrategy;
-
 /**
  * クラス: CreditCardPayment
  * クレジットカードによる支払いを処理する戦略

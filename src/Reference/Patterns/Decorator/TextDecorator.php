@@ -2,8 +2,6 @@
 
 namespace App\Reference\Patterns\Decorator;
 
-use App\Reference\Patterns\Decorator\TextFormatter;
-
 /**
  * 抽象クラス: TextDecorator
  * すべてのデコレータクラスの基底クラス

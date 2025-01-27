@@ -2,8 +2,6 @@
 
 namespace App\Reference\Patterns\Strategy;
 
-use App\Reference\Patterns\Strategy\PaymentStrategy;
-
 /**
  * クラス: PaymentContext
  * 支払い処理を実行するコンテキストクラス

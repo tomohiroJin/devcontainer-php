@@ -2,8 +2,6 @@
 
 namespace App\Reference\Patterns\Decorator;
 
-use App\Reference\Patterns\Decorator\TextDecorator;
-
 /**
  * クラス: ItalicTextFormatter
  * テキストを斜体にするデコレータ
