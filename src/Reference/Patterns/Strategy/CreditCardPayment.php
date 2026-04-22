@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Reference\Patterns\Strategy;
 
 /**
@@ -8,17 +10,17 @@ namespace App\Reference\Patterns\Strategy;
  */
 class CreditCardPayment implements PaymentStrategy
 {
-  private string $cardNumber;
-  private string $cardHolder;
+    private string $cardNumber;
+    private string $cardHolder;
 
-  public function __construct(string $cardNumber, string $cardHolder)
-  {
-    $this->cardNumber = $cardNumber;
-    $this->cardHolder = $cardHolder;
-  }
+    public function __construct(string $cardNumber, string $cardHolder)
+    {
+        $this->cardNumber = $cardNumber;
+        $this->cardHolder = $cardHolder;
+    }
 
-  public function pay(float $amount): string
-  {
-    return "Paid {$amount} via Credit Card ({$this->cardHolder}, {$this->cardNumber}).";
-  }
+    public function pay(float $amount): string
+    {
+        return "Paid {$amount} via Credit Card ({$this->cardHolder}, {$this->cardNumber}).";
+    }
 }

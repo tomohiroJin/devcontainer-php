@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Reference\Patterns\Strategy;
 
 /**
@@ -8,15 +10,15 @@ namespace App\Reference\Patterns\Strategy;
  */
 class PayPalPayment implements PaymentStrategy
 {
-  private string $email;
+    private string $email;
 
-  public function __construct(string $email)
-  {
-    $this->email = $email;
-  }
+    public function __construct(string $email)
+    {
+        $this->email = $email;
+    }
 
-  public function pay(float $amount): string
-  {
-    return "Paid {$amount} via PayPal ({$this->email}).";
-  }
+    public function pay(float $amount): string
+    {
+        return "Paid {$amount} via PayPal ({$this->email}).";
+    }
 }

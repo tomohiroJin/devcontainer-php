@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Reference\Patterns\Strategy;
 
 /**
@@ -8,5 +10,5 @@ namespace App\Reference\Patterns\Strategy;
  */
 interface PaymentStrategy
 {
-  public function pay(float $amount): string;
+    public function pay(float $amount): string;
 }

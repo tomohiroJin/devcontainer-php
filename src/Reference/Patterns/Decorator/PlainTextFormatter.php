@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Reference\Patterns\Decorator;
 
 /**
@@ -8,8 +10,8 @@ namespace App\Reference\Patterns\Decorator;
  */
 class PlainTextFormatter implements TextFormatter
 {
-  public function format(string $text): string
-  {
-    return $text;
-  }
+    public function format(string $text): string
+    {
+        return $text;
+    }
 }

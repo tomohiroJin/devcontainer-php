@@ -5,8 +5,15 @@
 /.cache/
 /.cache/
 
-# PHPUnitのキャッシュファイル
+# PHPUnit のキャッシュ
 .phpunit.result.cache
+/.phpunit.cache/
+
+# PHPStan キャッシュ
+/.phpstan.cache/
+
+# PHP-CS-Fixer キャッシュ
+/.php-cs-fixer.cache
 
 # OS固有のファイル
 .DS_Store
