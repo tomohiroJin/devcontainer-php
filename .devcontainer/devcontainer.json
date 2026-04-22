@@ -3,33 +3,48 @@
   "build": {
     "dockerfile": "Dockerfile"
   },
+  "features": {
+    "ghcr.io/devcontainers/features/common-utils:2": {
+      "installZsh": false,
+      "username": "vscode",
+      "upgradePackages": false
+    }
+  },
   "customizations": {
     "vscode": {
       "extensions": [
-        "bmewburn.vscode-intelephense-client", // PHP補完と静的解析
-        "xdebug.php-debug", // Xdebug
-        "neilbrayfield.php-docblocker", // PHPDocサポート
-        "mrmlnc.vscode-apache", // Apache構成支援（必要に応じて）
+        // PHP 開発コア
+        "bmewburn.vscode-intelephense-client",
+        "xdebug.php-debug",
+        "neilbrayfield.php-docblocker",
+        "recca0120.vscode-phpunit",
+        "SanderRonde.phpstan-vscode",
+        "junstyle.php-cs-fixer",
+
+        // エディタ/品質
+        "EditorConfig.EditorConfig",
         "streetsidesoftware.code-spell-checker",
-        "ms-vsliveshare.vsliveshare",
-        "GrapeCity.gc-excelviewer",
+        "oderwat.indent-rainbow",
+        "aaron-bond.better-comments",
+        "shardulm94.trailing-spaces",
+        "mosapride.zenkaku",
+
+        // Git / GitHub
         "mhutchie.git-graph",
         "donjayamanne.githistory",
         "GitHub.vscode-pull-request-github",
-        "MS-CEINTL.vscode-language-pack-ja",
+
+        // Markdown
         "yzhang.markdown-all-in-one",
         "shd101wyy.markdown-preview-enhanced",
         "DavidAnson.vscode-markdownlint",
-        "oderwat.indent-rainbow",
-        "mosapride.zenkaku",
-        "aaron-bond.better-comments",
-        "shardulm94.trailing-spaces",
-        "GitHub.github-vscode-theme"
+
+        // 日本語化
+        "MS-CEINTL.vscode-language-pack-ja"
       ]
     }
   },
   "postCreateCommand": "composer install",
-  "postStartCommand": "bash -c \"echo 'alias phpunit=\"./vendor/bin/phpunit\"' >> ~/.bashrc && source ~/.bashrc\"",
   "forwardPorts": [8080],
-  "remoteUser": "root"
+  "remoteUser": "vscode"
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Reference\Patterns\Factory;
 
 /**
@@ -8,19 +10,19 @@ namespace App\Reference\Patterns\Factory;
  */
 class ProductFactory
 {
-  /**
-   * 製品の種類に応じたインスタンスを生成
-   *
-   * @param string $type 製品のタイプ（"A" または "B"）
-   * @return ProductInterface
-   * @throws \InvalidArgumentException
-   */
-  public static function createProduct(string $type): ProductInterface
-  {
-    return match ($type) {
-      'A' => new ConcreteProductA(),
-      'B' => new ConcreteProductB(),
-      default => throw new \InvalidArgumentException("Unknown product type: $type"),
-    };
-  }
+    /**
+     * 製品の種類に応じたインスタンスを生成
+     *
+     * @param string $type 製品のタイプ（"A" または "B"）
+     * @return ProductInterface
+     * @throws \InvalidArgumentException
+     */
+    public static function createProduct(string $type): ProductInterface
+    {
+        return match ($type) {
+            'A' => new ConcreteProductA(),
+            'B' => new ConcreteProductB(),
+            default => throw new \InvalidArgumentException("Unknown product type: $type"),
+        };
+    }
 }

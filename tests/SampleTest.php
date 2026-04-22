@@ -1,14 +1,18 @@
 <?php
 
-use PHPUnit\Framework\TestCase;
+declare(strict_types=1);
+
+namespace Tests;
+
 use App\Sample;
+use PHPUnit\Framework\TestCase;
 
 class SampleTest extends TestCase
 {
-  public function testAdd()
-  {
-    $sample = new Sample();
-    $this->assertEquals(5, $sample->add(2, 3));
-    $this->assertEquals(0, $sample->add(0, 0));
-  }
+    public function testAdd(): void
+    {
+        $sample = new Sample();
+        $this->assertSame(5, $sample->add(2, 3));
+        $this->assertSame(0, $sample->add(0, 0));
+    }
 }

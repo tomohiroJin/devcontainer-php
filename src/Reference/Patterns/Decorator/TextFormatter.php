@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Reference\Patterns\Decorator;
 
 /**
@@ -8,11 +10,11 @@ namespace App\Reference\Patterns\Decorator;
  */
 interface TextFormatter
 {
-  /**
-   * テキストをフォーマットする
-   * 
-   * @param string $text
-   * @return string
-   */
-  public function format(string $text): string;
+    /**
+     * テキストをフォーマットする
+     *
+     * @param string $text
+     * @return string
+     */
+    public function format(string $text): string;
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Reference\Patterns\Strategy;
 
 /**
@@ -8,15 +10,15 @@ namespace App\Reference\Patterns\Strategy;
  */
 class BankTransferPayment implements PaymentStrategy
 {
-  private string $bankAccount;
+    private string $bankAccount;
 
-  public function __construct(string $bankAccount)
-  {
-    $this->bankAccount = $bankAccount;
-  }
+    public function __construct(string $bankAccount)
+    {
+        $this->bankAccount = $bankAccount;
+    }
 
-  public function pay(float $amount): string
-  {
-    return "Paid {$amount} via Bank Transfer ({$this->bankAccount}).";
-  }
+    public function pay(float $amount): string
+    {
+        return "Paid {$amount} via Bank Transfer ({$this->bankAccount}).";
+    }
 }

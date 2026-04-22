@@ -4,11 +4,13 @@
 
 ## 特徴
 
-- **PHP 8.2 環境**: 最新の PHP バージョンを使用。
+- **PHP 8.4 環境**: 最新の PHP バージョンを使用。
 - **Xdebug**: デバッグツールとして Xdebug を組み込み。
-- **Composer**: PHP の依存関係管理ツールをプリインストール。
-- **VS Code 拡張機能**: PHP 開発を支援する複数の拡張機能を自動的にインストール。
-- **`reference/` ディレクトリ追加**: PHP の基本構文・デザインパターンの実装を含むサンプルコードを収録。
+- **Composer**: PHP の依存関係管理ツールをプリインストール (公式 Composer イメージから取得)。
+- **非 root ユーザ (`vscode`)**: VS Code DevContainer 標準の非 root ユーザで動作。
+- **コード品質ツール**: PHPUnit 11 / PHPStan / PHP-CS-Fixer をプリインストール。
+- **VS Code 拡張機能**: PHP 開発を支援する拡張機能を自動的にインストール。
+- **`reference/` ディレクトリ**: PHP の基本構文・デザインパターンの実装を含むサンプルコードを収録。
 
 ## 前提条件
 
@@ -36,29 +38,24 @@ Visual Studio Code でこのフォルダを開き、コマンドパレット（`
 composer install
 ```
 
-### **4. Basic のテスト実行**
+### **4. テストと静的解析の実行**
 
-Basic の実装とテストは `Reference/Basic/` に含まれています。
+`composer.json` の scripts からまとめて実行できます。
 
 ```bash
-phpunit --bootstrap vendor/autoload.php src/Reference/Basic
+composer test       # PHPUnit
+composer analyse    # PHPStan
+composer fix        # PHP-CS-Fixer で自動整形
+composer fix:check  # フォーマット差分を確認するだけ (CI 向け)
+composer check      # fix:check + analyse + test を一括実行
 ```
 
-
-### **5. FizzBuzz のテスト実行**
-
-FizzBuzz の実装とテストは `Reference/Examples/` に含まれています。
+### **5. 特定ディレクトリ/ファイルのテストのみ実行**
 
 ```bash
-phpunit --bootstrap vendor/autoload.php tests/Reference/Examples/FizzBuzzTest.php
-```
-
-### **6. デザインパターンのサンプルコードの実行**
-
-各デザインパターンのサンプルコードは `Reference/Patterns/` に格納されています。
-
-```bash
-phpunit --bootstrap vendor/autoload.php tests/Reference/Patterns
+./vendor/bin/phpunit tests/Reference/Basic
+./vendor/bin/phpunit tests/Reference/Examples/FizzBuzzTest.php
+./vendor/bin/phpunit tests/Reference/Patterns
 ```
 
 ---
@@ -90,8 +87,10 @@ devcontainer-php/
 │   │   │   ├── Observer/
 │   │   │   ├── TemplateMethod/
 ├── composer.json
-├── composer.lock
-└── phpunit.xml
+├── phpunit.xml
+├── phpstan.neon
+├── .php-cs-fixer.dist.php
+└── .editorconfig
 ```
 
 ---
@@ -125,26 +124,21 @@ PHP でのデザインパターンの実装例。
 
 ---
 
+## **コード品質ツール**
+
+| ツール | 役割 | 設定ファイル |
+|------|------|------|
+| **PHPUnit 11** | ユニットテスト | `phpunit.xml` |
+| **PHPStan (level 6)** | 静的解析 | `phpstan.neon` |
+| **PHP-CS-Fixer** | コード整形 (PSR-12 + PHP 8.4 準拠) | `.php-cs-fixer.dist.php` |
+
+---
+
 ## **カスタマイズ**
 
 - **PHP バージョンの変更**: `.devcontainer/Dockerfile` 内のベースイメージを変更することで、異なる PHP バージョンを使用できます。
 - **追加の拡張機能**: `.devcontainer/devcontainer.json` の `customizations.vscode.extensions` セクションに拡張機能の ID を追加することで、他の VS Code 拡張機能をインストールできます。
-
----
-
-## **テストの実行**
-
-以下のコマンドで、すべてのテストを実行できます。
-
-```bash
-./vendor/bin/phpunit --bootstrap vendor/autoload.php tests/
-```
-
-また、個別のデザインパターンのテストを実行することも可能です。
-
-```bash
-./vendor/bin/phpunit --bootstrap vendor/autoload.php tests/Reference/Patterns/Strategy/StrategyTest.php
-```
+- **PHPStan のレベル変更**: `phpstan.neon` の `level` を `0`〜`10` で調整できます (高いほど厳格)。
 
 ---
 
