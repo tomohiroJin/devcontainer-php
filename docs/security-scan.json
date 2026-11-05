@@ -1,0 +1,16 @@
+{
+  "scanned_at": "2026-11-05T14:40:07.909104253Z",
+  "scanner": "Trivy 0.76.2",
+  "image_id": "sha256:b41ce41bf4b34c255a6800b1c2394cbc11ed1836609e2282c2a2f32c0aa694cd",
+  "os": {
+    "Family": "alpine",
+    "Name": "3.24.3"
+  },
+  "os_package_count": 53,
+  "vulnerabilities": [],
+  "composer_audit": {
+    "includes_dev_dependencies": true,
+    "known_advisories": 0
+  },
+  "scope": "OS package scan plus separate Composer locked dependency audit; manually compiled PHP/Xdebug binaries and VS Code extensions are not fully covered."
+}

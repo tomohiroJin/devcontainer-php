@@ -1,0 +1,7 @@
+.git
+vendor
+.cache
+build
+coverage
+.env*
+*.log

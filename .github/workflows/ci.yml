@@ -1,0 +1,41 @@
+name: PHP quality and security
+on:
+  push:
+  pull_request:
+  schedule:
+    - cron: '20 3 * * 1'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: php-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Build the development container
+        run: docker build --pull -f .devcontainer/Dockerfile -t php-dev:ci .
+      - name: Install locked dependencies and check PHP
+        run: |
+          docker run --rm --user "$(id -u):$(id -g)" -e COMPOSER_HOME=/tmp/composer \
+            -v "$PWD:/workspaces/devcontainer-php" php-dev:ci \
+            sh -ec 'composer validate --strict && composer install --no-interaction --prefer-dist && composer check-platform-reqs'
+      - name: Tests, static analysis, coding standard and dependency audit
+        run: |
+          docker run --rm --user "$(id -u):$(id -g)" -e COMPOSER_HOME=/tmp/composer \
+            -v "$PWD:/workspaces/devcontainer-php" php-dev:ci \
+            sh -ec 'composer check && composer audit --locked'
+      - name: Scan container OS and language packages
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
+        with:
+          version: v0.76.2
+          image-ref: php-dev:ci
+          scanners: vuln
+          severity: HIGH,CRITICAL
+          ignore-unfixed: false
+          exit-code: '1'
+          format: table
+          cache: 'false'

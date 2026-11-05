@@ -1,162 +1,122 @@
-# PHP 開発環境 (DevContainer)
+# PHP 開発環境
 
-このリポジトリは、Visual Studio Code の DevContainer 機能を使用して、PHP の開発環境を迅速にセットアップするための設定を提供します。
+PHP の基本構文・FizzBuzz・デザインパターンを学ぶための DevContainer です。
+PHP 8.5 / Composer 2 / PHPUnit 13 / PHPStan 2 / PHP CS Fixer 3 / Xdebug 3 を使用します。
+採用バージョンと検証結果は [環境更新・セキュリティ記録](docs/maintenance.md) を参照してください。
 
-## 特徴
+## セットアップ
 
-- **PHP 8.2 環境**: 最新の PHP バージョンを使用。
-- **Xdebug**: デバッグツールとして Xdebug を組み込み。
-- **Composer**: PHP の依存関係管理ツールをプリインストール。
-- **VS Code 拡張機能**: PHP 開発を支援する複数の拡張機能を自動的にインストール。
-- **`reference/` ディレクトリ追加**: PHP の基本構文・デザインパターンの実装を含むサンプルコードを収録。
-
-## 前提条件
-
-- [Docker](https://www.docker.com/) がインストールされていること。
-- [Visual Studio Code](https://code.visualstudio.com/) と [Dev Containers 拡張機能](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) がインストールされていること。
-
-## 使用方法
-
-### **1. リポジトリのクローン**
+ホストに Docker と VS Code、Microsoft の [Dev Containers](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) をインストールします。
 
 ```bash
 git clone https://github.com/tomohiroJin/devcontainer-php.git
 cd devcontainer-php
+code .
 ```
 
-### **2. DevContainer の起動**
+コマンドパレットから **Dev Containers: Reopen in Container** を実行します。
+`vscode` ユーザーで起動し、`composer install` がロック済みの開発依存を導入します。
+起動時の alias 追記や常駐サーバーは不要です。Dockerfile を更新した場合は **Rebuild Container** を実行してください。
 
-Visual Studio Code でこのフォルダを開き、コマンドパレット（`Ctrl+Shift+P` または `Cmd+Shift+P`）で `Dev Containers: Reopen in Container` を選択します。
+## 開発コマンド
 
-### **3. 依存関係のインストール**
-
-コンテナ内のターミナルで以下のコマンドを実行し、必要な PHP パッケージをインストールします。
+コンテナ内のリポジトリルートで実行します。
 
 ```bash
-composer install
+composer check                 # 全テスト・静的解析・PSR-12 チェック
+composer test                  # 全テスト
+composer analyse               # PHPStan level 6（src と tests、baseline なし）
+composer lint                  # PHP CS Fixer の変更内容を確認
+composer format                # PSR-12 で整形
+composer audit --locked        # 開発依存を含めて脆弱性を確認
+composer check-platform-reqs
 ```
-
-### **4. Basic のテスト実行**
-
-Basic の実装とテストは `Reference/Basic/` に含まれています。
 
 ```bash
-phpunit --bootstrap vendor/autoload.php src/Reference/Basic
+composer test -- tests/Reference/Basic
+composer test -- tests/Reference/Examples/FizzBuzzTest.php
+composer test -- tests/Reference/Patterns
+composer test -- tests/Reference/Patterns/Strategy/PaymentStrategyTest.php
 ```
 
+VS Code の **Tasks: Run Test Task** でも `composer check` を実行できます。
+テストは Testing ビューからも探索・実行できます。PHPUnit 設定は `phpunit.xml` に集約しています。
 
-### **5. FizzBuzz のテスト実行**
+## デバッグ
 
-FizzBuzz の実装とテストは `Reference/Examples/` に含まれています。
+`src/Sample.php` の `add()` にブレークポイントを置き、Run and Debug で **Debug PHPUnit** を選択して F5 を押します。
+PHP Debug と PHP は同じコンテナで動作するため、ホスト側へのポート転送やパスマッピングは不要です。
+
+通常の CLI と CI では Xdebug はオフです。手動でデバッグする場合は **Listen for Xdebug** を開始してから実行します。
 
 ```bash
-phpunit --bootstrap vendor/autoload.php tests/Reference/Examples/FizzBuzzTest.php
+XDEBUG_MODE=debug XDEBUG_TRIGGER=1 php vendor/bin/phpunit --filter SampleTest
 ```
 
-### **6. デザインパターンのサンプルコードの実行**
+9003 はコンテナ内ループバック接続用です。アプリケーション用の 8080 ポートは使用していません。
 
-各デザインパターンのサンプルコードは `Reference/Patterns/` に格納されています。
+## VS Code 拡張
+
+コンテナには以下のみを自動導入します。CLI ツールのバージョンは `composer.lock` で固定し、エディターと CI で共有します。
+
+| 拡張 ID | 用途・採用理由 |
+| --- | --- |
+| `bmewburn.vscode-intelephense-client` | PHP 補完・定義ジャンプ。基本機能は無料。組み込み PHP 補完は重複を避けて無効化 |
+| `xdebug.php-debug` | Xdebug によるブレークポイント・変数確認 |
+| `EditorConfig.EditorConfig` | 改行・インデント・末尾空白の統一 |
+| `junstyle.php-cs-fixer` | ロック済み PHP CS Fixer を保存時に実行。整形はこの拡張に統一 |
+| `SanderRonde.phpstan-vscode` | ローカル PHPStan によるプロジェクト解析。Pro 機能は使用しない |
+| `recca0120.vscode-phpunit` | PHPUnit テスト探索・実行 |
+
+ホスト側には `ms-vscode-remote.remote-containers` を推奨しています。
+Intelephense の有料機能を含め、有料ライセンスはこのワークフローに必須ではありません。
+PHP_CodeSniffer / Psalm も一般的な選択肢ですが、今回は整形を PHP CS Fixer、型解析を PHPStan に統一しています。
+
+以下は必要な場合のみ個人で追加してください。コンテナの必須設定には含めません。
+
+- `GitHub.vscode-pull-request-github`：PR 操作
+- `DavidAnson.vscode-markdownlint`、`streetsidesoftware.code-spell-checker`：文書支援
+- `MS-CEINTL.vscode-language-pack-ja`：日本語 UI
+- Composer 支援拡張：CLI と VS Code タスクで十分でない場合のみ、公開元・保守状況を確認して導入
+
+テーマ、Live Share、Excel 閲覧、Apache 支援、複数の Git 履歴拡張は既定から外しています。
+拡張は Marketplace の公開元と更新状況を確認して更新してください。拡張自体は Composer の監査対象ではありません。
+
+## 再現性と更新
+
+`composer.lock` をコミットし、通常の導入には `composer install` を使います。
+PHP と Composer のベースイメージは digest、Xdebug は Dockerfile の `XDEBUG_VERSION` で固定します。
+OS パッケージはビルド時にセキュリティ更新を取得するため、再ビルドでパッチレベルが変わる場合があります。
+
+Dependabot が Composer・Docker・GitHub Actions の更新 PR を週次で作成します。
+Xdebug の固定値と VS Code 拡張の互換性は手動でも確認します。
+更新時は以下を実施し、ロックファイルと検証結果を一緒にレビューします。
 
 ```bash
-phpunit --bootstrap vendor/autoload.php tests/Reference/Patterns
+composer update
+composer check
+composer audit --locked
+docker build --pull --no-cache -f .devcontainer/Dockerfile -t php-dev:local .
+trivy image --scanners vuln --severity HIGH,CRITICAL --exit-code 1 php-dev:local
 ```
 
----
+CI は同じ Dockerfile をビルドし、品質チェックと Composer / Trivy の脆弱性チェックを行います。
+コンテナに開発依存は含めないため、Composer 依存は別途 `composer audit --locked` で確認します。
+検出結果は無視せず、修正または期限付きの例外判断を行ってください。
 
-## ディレクトリ構成
-
-```text
-devcontainer-php/
-├── .devcontainer/
-│   ├── devcontainer.json
-│   └── Dockerfile
-├── src/
-│   ├── Reference/
-│   │   ├── Basic/        # PHPの基本構文に関するサンプル
-│   │   ├── Patterns/     # デザインパターンの実装
-│   │   │   ├── Strategy/
-│   │   │   ├── Decorator/
-│   │   │   ├── Factory/
-│   │   │   ├── Observer/
-│   │   │   ├── TemplateMethod/
-│   │   └── Example/      # 参考例
-├── tests/
-│   ├── Reference/
-│   │   ├── Basic/
-│   │   ├── Patterns/
-│   │   │   ├── Strategy/
-│   │   │   ├── Decorator/
-│   │   │   ├── Factory/
-│   │   │   ├── Observer/
-│   │   │   ├── TemplateMethod/
-├── composer.json
-├── composer.lock
-└── phpunit.xml
-```
-
----
-
-## **追加機能**
-
-### **1. `reference/basic/` - PHP の基本構文**
-
-PHP の基本的な構文を学ぶためのサンプルコードを収録。
-
-| 項目 | 説明 |
-|------|------|
-| **変数・定数・データ型・配列** | PHP の基本的なデータ構造と型の使い方 |
-| **制御構文（条件分岐・ループ・三項演算子）** | if/else, switch, for, while, foreach など |
-| **クラス・オブジェクト指向（継承・抽象化・オーバーライド・インターフェース）** | OOP の基本概念 |
-| **関数型プログラミング（高階関数・クロージャ・無名関数）** | PHP の関数型プログラミングの基礎 |
-
----
-
-### **2. `reference/patterns/` - デザインパターン**
-
-PHP でのデザインパターンの実装例。
-
-| デザインパターン | 説明 |
-|------|------|
-| **Strategy** | 動的にアルゴリズムを変更できる |
-| **Decorator** | オブジェクトに動的に機能を追加 |
-| **Factory** | インスタンス生成を専用のファクトリクラスに委ねる |
-| **Observer** | あるオブジェクトの変更を監視し、通知を受け取る |
-| **Template Method** | アルゴリズムの骨格を定義し、一部をサブクラスに委譲 |
-
----
-
-## **カスタマイズ**
-
-- **PHP バージョンの変更**: `.devcontainer/Dockerfile` 内のベースイメージを変更することで、異なる PHP バージョンを使用できます。
-- **追加の拡張機能**: `.devcontainer/devcontainer.json` の `customizations.vscode.extensions` セクションに拡張機能の ID を追加することで、他の VS Code 拡張機能をインストールできます。
-
----
-
-## **テストの実行**
-
-以下のコマンドで、すべてのテストを実行できます。
+TLS 検査プロキシがある環境では、信頼済みの CA バンドルを BuildKit secret `proxy_ca` として渡せます。
+証明書の検証は有効のままです。実行時の Composer にも環境に応じた CA を読み取り専用で渡してください。
 
 ```bash
-./vendor/bin/phpunit --bootstrap vendor/autoload.php tests/
+docker build --secret id=proxy_ca,src=/path/to/trusted-ca-bundle.pem \
+  -f .devcontainer/Dockerfile -t php-dev:local .
 ```
 
-また、個別のデザインパターンのテストを実行することも可能です。
+## サンプル
 
-```bash
-./vendor/bin/phpunit --bootstrap vendor/autoload.php tests/Reference/Patterns/Strategy/StrategyTest.php
-```
+- `src/Reference/Basic`：変数・配列、制御構文、オブジェクト指向、関数型プログラミング
+- `src/Reference/Examples`：FizzBuzz
+- `src/Reference/Patterns`：Strategy、Decorator、Factory、Observer、Template Method
+- `tests`：対応する PHPUnit テスト
 
----
-
-## **参考資料**
-
-- [Visual Studio Code Remote - Containers](https://code.visualstudio.com/docs/remote/containers)
-- [PHP: Hypertext Preprocessor](https://www.php.net/)
-- [Composer](https://getcomposer.org/)
-- [PHPUnit](https://phpunit.de/)
-- [デザインパターン - Wikipedia](https://ja.wikipedia.org/wiki/デザインパターン_(ソフトウェア))
-
----
-
-この設定により、**迅速に PHP の開発とテストを開始できます**。  
-デザインパターンや基本構文のサンプルを活用し、**より理解を深めてください** 🚀
+学習用の `OOPConcepts.php` は複数の型を一つにまとめています。このファイルは Composer の classmap に明示して直接の型参照も解決します。

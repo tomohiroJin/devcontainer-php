@@ -8,9 +8,9 @@ namespace App\Reference\Patterns\Factory;
  */
 interface ProductInterface
 {
-  /**
-   * 製品の情報を取得する
-   * @return string
-   */
-  public function getInfo(): string;
+    /**
+     * 製品の情報を取得する
+     * @return string
+     */
+    public function getInfo(): string;
 }

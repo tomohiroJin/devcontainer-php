@@ -8,8 +8,8 @@ namespace App\Reference\Patterns\Factory;
  */
 class ConcreteProductB implements ProductInterface
 {
-  public function getInfo(): string
-  {
-    return "This is Product B";
-  }
+    public function getInfo(): string
+    {
+        return "This is Product B";
+    }
 }
