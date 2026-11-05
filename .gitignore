@@ -3,6 +3,9 @@
 
 # キャッシュディレクトリ
 /.cache/
+/.php-cs-fixer.cache
+/.phpunit.cache
+/.phpstan.cache
 
 # PHPUnitのキャッシュファイル
 .phpunit.result.cache

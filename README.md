@@ -15,7 +15,8 @@ code .
 ```
 
 コマンドパレットから **Dev Containers: Reopen in Container** を実行します。
-`vscode` ユーザーで起動し、`composer install` がロック済みの開発依存を導入します。
+`vscode` ユーザーで起動し、`.devcontainer/post-create.sh` が PHP の版と Composer ファイルの整合性を確認してから、ロック済みの開発依存を導入します。
+同じ初期化スクリプトを CI でも実行します。
 起動時の alias 追記や常駐サーバーは不要です。Dockerfile を更新した場合は **Rebuild Container** を実行してください。
 
 ## 開発コマンド
@@ -142,3 +143,28 @@ trivy --config .trivy.yaml image --scanners vuln --severity HIGH,CRITICAL --exit
 コンテナには sudo を導入していません。継続して必要なパッケージは Dockerfile の最終ステージの `apk add` に追加して再ビルドし、変更を共有・再監査してください。
 ワークスペースはクローン先のフォルダ名にかかわらず `/workspaces/devcontainer-php` にマウントします。
 コンテナ固有の PHP 実行パスは DevContainer の VS Code 設定に限定し、ホスト側のワークスペース設定には指定していません。
+
+
+## 初期化に失敗した場合
+
+`composer.json` と `composer.lock`、コンテナイメージは同じブランチの構成に揃えてください。
+`^9.0` の要求に対してロックが `11.5.55` というエラーは、異なる構成の Composer ファイルが混在していることを示します。
+`root` のシェル、`Cannot load Xdebug - it was already loaded`、`host.docker.internal:9003` への自動接続警告は旧コンテナ設定を使用している手掛かりです。
+現在の構成は PHP 8.5 / PHPUnit 13 / `vscode` ユーザーで、通常時は Xdebug 無効です。
+
+1. ホスト側で `git branch --show-current` と `git status --short --untracked-files=all` を確認します。未マージの変更は `main` には含まれません。
+2. ローカルの変更を保存します。旧ブランチで生成された未追跡・無視対象の `composer.lock` がある場合は、リポジトリ外へバックアップしてから、利用するブランチへ切り替えます。
+3. 追跡対象の Composer ファイルをローカルで変更している場合は差分を確認し、必要な変更を保存したうえで、同じコミットの `composer.json` と `composer.lock` に揃えます。初期化のためだけに `composer update` を実行してロックを変更しないでください。
+4. **Dev Containers: Rebuild Container** を実行します。既存コンテナの再接続だけでは Dockerfile の変更は反映されません。
+5. 初期化ログを確認します。失敗した場合は原因を解消してから、コンテナ内で以下を再実行できます。
+
+```bash
+sh .devcontainer/post-create.sh
+composer test -- tests/Reference/Basic
+```
+
+`phpunit` のグローバルコマンドや alias は不要です。`composer test` または `./vendor/bin/phpunit` を使います。
+テスト対象は実装の `src/Reference/Basic` ではなく、`tests/Reference/Basic` です。
+
+ツールのキャッシュは `.cache/` に集約しています。旧構成や拡張が生成する `.php-cs-fixer.cache`、`.phpunit.cache`、`.phpstan.cache` も Git と Docker の対象から除外します。
+ignore 設定は未追跡ファイルに適用されます。すでに追跡されているファイルは別途確認が必要で、この変更で既存ファイルを削除することはありません。
