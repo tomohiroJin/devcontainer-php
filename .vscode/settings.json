@@ -1,6 +1,5 @@
 {
   "php.suggest.basic": false,
-  "php.validate.executablePath": "/usr/local/bin/php",
   "intelephense.environment.phpVersion": "8.5.0",
   "[php]": {
     "editor.defaultFormatter": "junstyle.php-cs-fixer",
@@ -12,7 +11,6 @@
   "php-cs-fixer.allowRisky": false,
   "phpstan.binPath": "vendor/bin/phpstan",
   "phpstan.configFile": "phpstan.neon.dist",
-  "phpunit.php": "/usr/local/bin/php",
   "phpunit.phpunit": "vendor/bin/phpunit",
   "cSpell.words": [
     "phpunit",

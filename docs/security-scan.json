@@ -1,12 +1,12 @@
 {
-  "scanned_at": "2026-11-05T14:40:07.909104253Z",
+  "scanned_at": "2026-11-05T15:23:03.368471636Z",
   "scanner": "Trivy 0.76.2",
-  "image_id": "sha256:b41ce41bf4b34c255a6800b1c2394cbc11ed1836609e2282c2a2f32c0aa694cd",
+  "image_id": "sha256:11343ebea7388d14712b987eb554b930f1bdc5f76cf2cf85333030960f123721",
   "os": {
     "Family": "alpine",
     "Name": "3.24.3"
   },
-  "os_package_count": 53,
+  "os_package_count": 54,
   "vulnerabilities": [],
   "composer_audit": {
     "includes_dev_dependencies": true,

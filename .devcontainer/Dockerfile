@@ -26,7 +26,7 @@ RUN --mount=type=secret,id=proxy_ca \
     set -eux; \
     if [ -f /run/secrets/proxy_ca ]; then export SSL_CERT_FILE=/run/secrets/proxy_ca; fi; \
     apk upgrade --no-cache; \
-    apk add --no-cache git unzip bash shadow; \
+    apk add --no-cache git unzip bash shadow libstdc++; \
     addgroup -g 1000 vscode; \
     adduser -D -u 1000 -G vscode -s /bin/bash vscode; \
     mkdir -p /workspaces/devcontainer-php; \

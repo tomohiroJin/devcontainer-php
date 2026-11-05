@@ -16,7 +16,13 @@
         "junstyle.php-cs-fixer",
         "SanderRonde.phpstan-vscode",
         "recca0120.vscode-phpunit"
-      ]
+      ],
+      "settings": {
+        "php.validate.executablePath": "/usr/local/bin/php",
+        "phpunit.php": "/usr/local/bin/php"
+      }
     }
-  }
+  },
+  "workspaceMount": "source=${localWorkspaceFolder},target=/workspaces/devcontainer-php,type=bind",
+  "workspaceFolder": "/workspaces/devcontainer-php"
 }

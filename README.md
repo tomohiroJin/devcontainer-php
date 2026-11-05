@@ -120,3 +120,25 @@ docker build --secret id=proxy_ca,src=/path/to/trusted-ca-bundle.pem \
 - `tests`：対応する PHPUnit テスト
 
 学習用の `OOPConcepts.php` は複数の型を一つにまとめています。このファイルは Composer の classmap に明示して直接の型参照も解決します。
+
+### 未修正の脆弱性が見つかった場合
+
+HIGH / CRITICAL は修正版の有無にかかわらず CI を失敗させます。まずベースイメージ・OS パッケージ・依存を更新して再検査します。
+修正が提供されていない場合も、無関係な PR ごとに検査を無効化せず、対応用の PR で次を記録してレビューします。
+
+1. CVE、影響を受けるパッケージと版、修正版の有無、実際に到達可能な攻撃経路を調査する。
+2. 継続利用が必要な理由、緩和策、対応担当者、追跡 Issue、再確認日を明記する。
+3. 承認された例外のみ `.trivyignore.yaml` の `vulnerabilities` に追加し、`id`、`statement`（理由と Issue）、`expired_at`（期限、原則 14 日以内）を必須とする。CVE 全体の例外になるため対象パッケージと影響範囲も理由に書く。
+4. 修正版が出たら更新と同時に例外を削除する。期限切れの例外は Trivy が適用しないため、CI は再び失敗する。
+
+CI とローカルで同じ設定を読み込むには、以下で実行します。現在の例外リストは空です。
+
+```bash
+trivy --config .trivy.yaml image --scanners vuln --severity HIGH,CRITICAL --exit-code 1 php-dev:local
+```
+
+### 非 root での追加パッケージ
+
+コンテナには sudo を導入していません。継続して必要なパッケージは Dockerfile の最終ステージの `apk add` に追加して再ビルドし、変更を共有・再監査してください。
+ワークスペースはクローン先のフォルダ名にかかわらず `/workspaces/devcontainer-php` にマウントします。
+コンテナ固有の PHP 実行パスは DevContainer の VS Code 設定に限定し、ホスト側のワークスペース設定には指定していません。

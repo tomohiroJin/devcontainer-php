@@ -5,7 +5,7 @@
 | 対象 | 採用版 | 方針 |
 | --- | --- | --- |
 | PHP | 8.5.12 | 公式サポート中の最新安定系列 8.5。2027 年末まで通常サポート、2029 年末までセキュリティサポート |
-| OS | Alpine 3.24.3 | 公式 `php:8.5-cli-alpine` の digest を固定し、`apk upgrade` で公開済み修正を適用 |
+| OS | Alpine 3.24 系（検証時の版は監査記録参照） | 公式 `php:8.5-cli-alpine` の digest を固定し、`apk upgrade` で公開済み修正を適用 |
 | Composer | 2.11.1 | 公式イメージからバイナリを取得し、digest も固定 |
 | Xdebug | 3.5.3 | 公式 HTTPS ソースを SHA-256 で固定。二重ロードを解消、通常はオフ |
 | PHPUnit | 13.4.6 | PHP 8.5 対応。XML 設定も 13.4 に移行 |
@@ -34,9 +34,11 @@ Alpine は musl libc を使用するため、追加のネイティブ拡張・�
 
 ### 脆弱性の調査結果
 
+以下および `security-scan.json` は、記載されたイメージ ID と検査時刻に対する点時刻の記録です。`apk upgrade` により Alpine のパッチ版も変わるため、別の CI ビルドで同じ OS パッチ版になるとは限りません。
+
 2026-11-05 23:40 JST に Trivy で最終イメージ（Alpine 3.24.3、53 OS パッケージ）を検査し、**検出 0 件**。
 `composer audit --locked` も開発依存を含めて **既知の脆弱性 0 件**。
-検査対象と結果の要約は [security-scan.json](security-scan.json) に記録しています。
+最新の再検査対象と結果の要約は [security-scan.json](security-scan.json) に記録しています（下記のレビュー対応で更新）。
 
 比較した Debian 13 ベースでは HIGH/CRITICAL が 44 CVE（86 パッケージ別検出）あり、報告時点で修正版が未提供でした。
 Alpine 候補には修正可能な HIGH/CRITICAL が 3 パッケージ分ありましたが、`apk upgrade` 後には検出されなくなりました。
@@ -73,3 +75,16 @@ CI は週次と push / PR 時に実行し、HIGH/CRITICAL は未修正分も含�
 - [PHPStan](https://phpstan.org/)
 - [PHP CS Fixer](https://cs.symfony.com/)
 - [Trivy](https://trivy.dev/)
+
+
+## 2026-11-06 のレビュー対応
+
+- `libstdc++` が最終イメージに存在しないことを再現し、明示的な導入と CI の前提チェックを追加。
+- 公式 Alpine 向け VS Code Server **1.145.0**（commit `a717861c07586a53d83b80d742cd3f59b20a6273`）の配布を公式 API の SHA-256 と照合。
+- 非 root ユーザーで Server を起動し、`/version` の応答が上記 commit と一致することを確認。推奨 6 拡張の導入と認識、Server の再起動も検証。
+- これは Server の起動・拡張導入の検証であり、デスクトップ版 VS Code の **Reopen in Container** の GUI 接続操作は未検証。
+- フォルダ名の異なるコピーから Dev Containers CLI で起動し、ワークスペースが `/workspaces/devcontainer-php` になることと全 46 テスト・59 アサーションの成功を確認。
+- PHP の絶対パス指定を DevContainer 専用の VS Code 設定に移動。ホスト側では指定しない。
+- `push` の CI 対象を `main` に限定し、PR ブランチの二重実行を防止。
+- Trivy の期限付き例外手順と、sudo を使用しない追加パッケージの管理方法を README に明記。現在の例外は 0 件。
+- 修正後イメージの **54 OS パッケージ**を再スキャンして検出 **0 件**。時刻・イメージ ID・検査時点の OS 版は `security-scan.json` に記録。
