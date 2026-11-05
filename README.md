@@ -144,8 +144,10 @@ trivy --config .trivy.yaml image --scanners vuln --severity HIGH,CRITICAL --exit
 ワークスペースはクローン先のフォルダ名にかかわらず `/workspaces/devcontainer-php` にマウントします。
 コンテナ固有の PHP 実行パスは DevContainer の VS Code 設定に限定し、ホスト側のワークスペース設定には指定していません。
 
-
 ## 初期化に失敗した場合
+
+初期化時には Composer の厳密な検証と `composer check-platform-reqs --lock` を実行します。スキーマ・メタデータ・ロックの問題は Composer の実際の出力に従って修正してください。
+PHP の版や拡張の要件はロックファイルから検証します。これらはファイル間の整合性と環境要件のチェックであり、両ファイルが現在の Git ブランチ由来であることまでは保証しません。
 
 `composer.json` と `composer.lock`、コンテナイメージは同じブランチの構成に揃えてください。
 `^9.0` の要求に対してロックが `11.5.55` というエラーは、異なる構成の Composer ファイルが混在していることを示します。
@@ -166,5 +168,5 @@ composer test -- tests/Reference/Basic
 `phpunit` のグローバルコマンドや alias は不要です。`composer test` または `./vendor/bin/phpunit` を使います。
 テスト対象は実装の `src/Reference/Basic` ではなく、`tests/Reference/Basic` です。
 
-ツールのキャッシュは `.cache/` に集約しています。旧構成や拡張が生成する `.php-cs-fixer.cache`、`.phpunit.cache`、`.phpstan.cache` も Git と Docker の対象から除外します。
+ツールのキャッシュは `.cache/` に集約しています。旧構成で生成される `.php-cs-fixer.cache`、`.phpunit.cache`、`.phpstan.cache` も Git と Docker の対象から除外します。
 ignore 設定は未追跡ファイルに適用されます。すでに追跡されているファイルは別途確認が必要で、この変更で既存ファイルを削除することはありません。
