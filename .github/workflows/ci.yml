@@ -26,7 +26,7 @@ jobs:
         run: |
           docker run --rm --user "$(id -u):$(id -g)" -e COMPOSER_HOME=/tmp/composer \
             -v "$PWD:/workspaces/devcontainer-php" php-dev:ci \
-            sh -ec 'composer validate --strict && composer install --no-interaction --prefer-dist && composer check-platform-reqs'
+            sh .devcontainer/post-create.sh
       - name: Tests, static analysis, coding standard and dependency audit
         run: |
           docker run --rm --user "$(id -u):$(id -g)" -e COMPOSER_HOME=/tmp/composer \
