@@ -8,8 +8,8 @@ namespace App\Reference\Patterns\Decorator;
  */
 class UnderlineTextFormatter extends TextDecorator
 {
-  public function format(string $text): string
-  {
-    return "<u>" . parent::format($text) . "</u>";
-  }
+    public function format(string $text): string
+    {
+        return "<u>" . parent::format($text) . "</u>";
+    }
 }

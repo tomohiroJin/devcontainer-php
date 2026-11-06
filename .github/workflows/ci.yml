@@ -1,0 +1,46 @@
+name: PHP quality and security
+on:
+  push:
+    branches: [main]
+  pull_request:
+  schedule:
+    - cron: '20 3 * * 1'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: php-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Build the development container
+        run: docker build --pull -f .devcontainer/Dockerfile -t php-dev:ci .
+      - name: Check non-root user and VS Code Server prerequisite
+        run: |
+          docker run --rm php-dev:ci sh -ec 'test "$(id -u)" -ne 0; test -r /usr/lib/libstdc++.so.6'
+      - name: Install locked dependencies and check PHP
+        run: |
+          docker run --rm --user "$(id -u):$(id -g)" -e COMPOSER_HOME=/tmp/composer \
+            -v "$PWD:/workspaces/devcontainer-php" php-dev:ci \
+            sh .devcontainer/post-create.sh
+      - name: Tests, static analysis, coding standard and dependency audit
+        run: |
+          docker run --rm --user "$(id -u):$(id -g)" -e COMPOSER_HOME=/tmp/composer \
+            -v "$PWD:/workspaces/devcontainer-php" php-dev:ci \
+            sh -ec 'composer check && composer audit --locked'
+      - name: Scan container OS and language packages
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
+        with:
+          version: v0.76.2
+          image-ref: php-dev:ci
+          trivy-config: .trivy.yaml
+          scanners: vuln
+          severity: HIGH,CRITICAL
+          ignore-unfixed: false
+          exit-code: '1'
+          format: table
+          cache: 'false'

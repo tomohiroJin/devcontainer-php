@@ -3,7 +3,9 @@
 
 # キャッシュディレクトリ
 /.cache/
-/.cache/
+/.php-cs-fixer.cache
+/.phpunit.cache
+/.phpstan.cache
 
 # PHPUnitのキャッシュファイル
 .phpunit.result.cache
@@ -34,8 +36,6 @@ Thumbs.db
 coverage/
 coverage.xml
 
-# オートロードファイル
-composer.lock
 
 # ララベルプロジェクトの場合
 /storage/*

@@ -8,5 +8,5 @@ namespace App\Reference\Patterns\Strategy;
  */
 interface PaymentStrategy
 {
-  public function pay(float $amount): string;
+    public function pay(float $amount): string;
 }

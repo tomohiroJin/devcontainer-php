@@ -8,8 +8,8 @@ namespace App\Reference\Patterns\Decorator;
  */
 class PlainTextFormatter implements TextFormatter
 {
-  public function format(string $text): string
-  {
-    return $text;
-  }
+    public function format(string $text): string
+    {
+        return $text;
+    }
 }

@@ -1,0 +1,10 @@
+.git
+vendor
+.cache
+.php-cs-fixer.cache
+.phpunit.cache
+.phpstan.cache
+build
+coverage
+.env*
+*.log

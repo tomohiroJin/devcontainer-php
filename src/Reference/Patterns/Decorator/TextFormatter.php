@@ -8,11 +8,11 @@ namespace App\Reference\Patterns\Decorator;
  */
 interface TextFormatter
 {
-  /**
-   * テキストをフォーマットする
-   * 
-   * @param string $text
-   * @return string
-   */
-  public function format(string $text): string;
+    /**
+     * テキストをフォーマットする
+     *
+     * @param string $text
+     * @return string
+     */
+    public function format(string $text): string;
 }

@@ -8,8 +8,8 @@ namespace App\Reference\Patterns\Decorator;
  */
 class ItalicTextFormatter extends TextDecorator
 {
-  public function format(string $text): string
-  {
-    return "<i>" . parent::format($text) . "</i>";
-  }
+    public function format(string $text): string
+    {
+        return "<i>" . parent::format($text) . "</i>";
+    }
 }

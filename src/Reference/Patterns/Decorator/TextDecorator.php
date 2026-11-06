@@ -8,15 +8,15 @@ namespace App\Reference\Patterns\Decorator;
  */
 abstract class TextDecorator implements TextFormatter
 {
-  protected TextFormatter $formatter;
+    protected TextFormatter $formatter;
 
-  public function __construct(TextFormatter $formatter)
-  {
-    $this->formatter = $formatter;
-  }
+    public function __construct(TextFormatter $formatter)
+    {
+        $this->formatter = $formatter;
+    }
 
-  public function format(string $text): string
-  {
-    return $this->formatter->format($text);
-  }
+    public function format(string $text): string
+    {
+        return $this->formatter->format($text);
+    }
 }
