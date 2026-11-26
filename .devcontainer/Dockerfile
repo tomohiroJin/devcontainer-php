@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 FROM composer:2.11.1@sha256:8de2184c6de224f4689e8f80ed5f5edaf0030b6b8b7839a22a2bcb6722ac87d0 AS composer
-FROM php:8.5-cli-alpine@sha256:e899a75c775804e5466dbd9c96b31f8b6c6ae2ddb053a8466223a0c32992ff8e AS extensions
+FROM php:8.6-cli-alpine@sha256:19c9ad299d11db9b15a2198c1e5aa8345b1907f0ac48731f50cf024d2b64221e AS extensions
 
 ARG XDEBUG_VERSION=3.5.3
 # The optional CA secret supports managed HTTPS proxies without disabling TLS.
@@ -21,7 +21,7 @@ RUN --mount=type=secret,id=proxy_ca \
     docker-php-ext-enable xdebug; \
     rm -rf /tmp/xdebug /tmp/xdebug.tgz /var/cache/apk/*
 
-FROM php:8.5-cli-alpine@sha256:e899a75c775804e5466dbd9c96b31f8b6c6ae2ddb053a8466223a0c32992ff8e
+FROM php:8.6-cli-alpine@sha256:19c9ad299d11db9b15a2198c1e5aa8345b1907f0ac48731f50cf024d2b64221e
 RUN --mount=type=secret,id=proxy_ca \
     set -eux; \
     if [ -f /run/secrets/proxy_ca ]; then export SSL_CERT_FILE=/run/secrets/proxy_ca; fi; \
